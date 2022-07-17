@@ -10,6 +10,18 @@
         addrow *{
             visibility: hidden;
         }
+        #hidecustomer{
+            visibility: hidden;
+        }
+        #customerprint{
+            visibility: hidden;
+        }
+        #transferprint{
+            visibility: hidden;
+        }
+        #payableprint{
+            visibility: hidden;
+        }
 
                 
         .model-print, .model-print * {
