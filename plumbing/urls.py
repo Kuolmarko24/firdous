@@ -42,6 +42,8 @@ urlpatterns = [
      path('workorders/', views.workorder, name='workorders'),
      path('returnjobs/', views.ReturnJobo, name='returnjobs'),
      path('createcustomer', views.Createcustomer, name='createcustomer'),
+     #Proforma
+     path('createproforma', views.Createproforma, name='createproforma'),
      path('createworkorder', views.Createworkorder, name='createworkorder'),
 
      path('createreturnjob', views.Createreturnjob, name='createreturnjobs'),

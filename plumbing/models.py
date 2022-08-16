@@ -306,4 +306,26 @@ class Transfer(models.Model):
     def __str__(self):
         return str(self.vendor)
 
+class QuotationReceipt(models.Model):
+    shopOptions = (
+        ('firdous', 'firdous'),
+        ('sj', 'sj'),
+    )
+    paymentMode = (
+        ('Bank', 'Bank'),
+        ('Cash', 'Cash'),
+    )
+    receiptNumber = models.CharField(max_length=150)
+    customerName = models.CharField(max_length=150,blank=True)
+    modeOfPayment = models.CharField(max_length=100, choices=paymentMode)
+    purchasedFrom = models.CharField(default='sj', max_length=20, choices=shopOptions)
+    # item_purchased = models.CharField(max_length=250)
+    item_purchased = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    quantity = models.CharField(max_length=150, blank=True,default=0)
+    price = models.CharField(max_length=150, blank=True,default=0)
+    #discount =  models.CharField(max_length=150, blank=True,default=0)
+    totalAmountPaid =  models.CharField(max_length=150, blank=True,default=0)
+    # AmountAfterDiscount = models.FloatField()
+    #balance = models.CharField(max_length=150, blank=True,default=0)
 
+    date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))

@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from reportlab.pdfgen import canvas
 # from reportlab.lib.units import inch
 # from reportlab.lib.pagesizes import letter
-from .models import Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder
+from .models import Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder, QuotationReceipt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -575,7 +575,8 @@ def Createcustomer(request):
     # context = {'inventorys': inventorys
     #            }
     return render(request, 'customer_create.html', )
-
+def Createproforma(request):
+    return render(request, 'proforma.html', )
 
 def Customerdetailfunc(request, pk):
     # inventorys = Stock.objects.all()
@@ -739,7 +740,7 @@ def workorder(request):
     # workorders = Workorder.objects.all()
     # context ={'workorders':workorders
     #          }
-    return render(request, 'workorder.html', context)
+    return render(request, 'workorder.html')
 
 
 # @login_required
@@ -812,3 +813,40 @@ def selectcurrency(request):
 #     data.currency_id = request.session['currency']
 #     data.save()  # save data
 #     return HttpResponseRedirect(lasturl)
+def quotationReceipt(request):
+    stocks = Stock.objects.all()
+    if request.method == 'POST':
+        if 'sender' in request.POST:
+
+            try:
+                receiptNumber = request.POST.get('chequeNo')
+                customerName = request.POST.get('customerName')
+                modeOfPayment = request.POST.get('modeOfPayment')
+                item_purchased = request.POST.get('item_purchased')
+
+                # item = get_object_or_404(Stock, inventoryPart=item_purchased)
+                purchasedFrom = request.POST.get('purchasedFrom')
+                quantity = request.POST.get('quantity')
+                price = request.POST.get('price')
+
+                totalAmountPaid = request.POST.get('totalAmountPaid')
+
+                date = request.POST.get('date')
+
+                QuotationReceipt.objects.create(
+                    receiptNumber=receiptNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    totalAmountPaid=totalAmountPaid,
+                    date=date,
+                )
+            except QuotationReceipt.DoesNotExist:
+                return HttpResponse('Fail')
+    context = {
+        'stocks': stocks,
+    }
+    return render(request, 'proforma.html', context)

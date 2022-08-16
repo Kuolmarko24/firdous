@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% block content %}
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Payable</h4>
+
+            </div>
+        </div>
+        <!--row -->
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12">
+                <div class="white-box">
+                    
+                    <h3 class="box-title">Table showing registered Quotations</h3>
+                    <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Quotation No</th>
+                                            <th>Customer Name</th>
+                                            <th>Mode of Payment</th>
+                                            <th>Purchased From</th>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                            <th>Grand Total</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span id="chequeNo">Q-id</span>
+                                            </td>
+
+                                            <td>
+                                                <input type="text" name="customername" class="form-control">
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select class="form-control" id="exampleFormControlSelect1">
+                                                    <option>Cash</option>
+                                                    <option>Bank</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                               <td>
+                                                <div class="form-group">
+                                                    <select class="form-control" id="exampleFormControlSelect1">
+                                                    <option>SJ</option>
+                                                    <option>Firdous</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+
+                                             <td>
+                                                <input type="date" name="Date" class="form-control">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
