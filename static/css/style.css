@@ -5,7 +5,7 @@
 
     @media print{
         body * {
-            visibility: hidden;
+            visibility: visible;
         }
         addrow *{
             visibility: hidden;
@@ -25,6 +25,14 @@
             visibility: hidden;
         }
         #page-wrapper {
+            visibility: visible;
+        }
+
+        #printCustomerReceipt{
+            visibility: visible;
+        };
+
+        .modal-header, modal-header *{
             visibility: visible;
         }
 

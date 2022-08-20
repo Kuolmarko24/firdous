@@ -276,6 +276,8 @@ def customerReceipt(request):
                 price= request.POST.get('price1')+"--"+request.POST.get('price2')+"--"+request.POST.get('price3')+"--"+request.POST.get('price4')+"--"+request.POST.get('price5')
                 discount= request.POST.get('discount1')+"--"+request.POST.get('discount2')+"--"+request.POST.get('discount3')+"--"+request.POST.get('discount4')+"--"+request.POST.get('discount5')
                 
+                gtt = request.POST.get('GTT') 
+                # Get the total and send it to the cash account
                 totalAmountPaid= request.POST.get('totalAmountPaid1')+"--"+request.POST.get('totalAmountPaid2')+"--"+request.POST.get('totalAmountPaid3')+"--"+request.POST.get('totalAmountPaid4')+"--"+request.POST.get('totalAmountPaid5')
                 date= request.POST.get('date')
                 
@@ -285,19 +287,25 @@ def customerReceipt(request):
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(piecesQuantity=F('piecesQuantity')-1)
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice5'))).update(piecesQuantity=F('piecesQuantity')-1)
 
+                CustomerReceipt.objects.create(
+                    receiptNumber=receiptNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    discount=discount,
+                    totalAmountPaid=totalAmountPaid,
+                    date=date,
+                    )
 
-                # CustomerReceipt.objects.create(
-                #     receiptNumber=receiptNumber,
-                #     customerName=customerName,
-                #     modeOfPayment=modeOfPayment,
-                #     item_purchased=item_purchased,
-                #     purchasedFrom=purchasedFrom,
-                #     quantity=quantity,
-                #     price=price,
-                #     discount=discount,
-                #     totalAmountPaid=totalAmountPaid,
-                #     date=date,
-                #     )
+                # This below gets the cash inserted and adds it onto the cash from receipts
+                acc = Account(name='SJ & Firdous')
+                acc.cashFromReceipts = acc.cashFromReceipts + gtt
+                acc.save()
+                print("Added the total amount from receipts to cashFromReceipts account")
+
             except CustomerReceipt.DoesNotExist:
                 return HttpResponse('Fail') 
     context = {

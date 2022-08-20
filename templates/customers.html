@@ -39,11 +39,7 @@
                 <div class="white-box">
 
                     <h3 class="box-title">Customer Details</h3>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                    Create Sales Receipt
-                    </button>
-
-
+                        <a href="{% url 'customerReceipt' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Create Sales Receipt</a>
                     <!-- The Modal -->
                     <div class="modal model-print" id="myModal">
                         <div class="modal-dialog">

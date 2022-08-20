@@ -27,7 +27,7 @@
             </span>
         </div>
 
-        <div>
+        <div id="printCustomerReceipt">
             <div>
                 <div >
 
@@ -107,10 +107,10 @@
                                 <tr id="rowitem">
                                     <td><input list='stock-items{{i}}' id='ice-cream-choice' name='ice-cream-choice{{i}}' class='form-control ice-cream-choice{{i}} '/></td>
                                     <datalist id='stock-items{{i}}' class='stock-items ice-cream-choice{{i}}'>{% for stock in stocks %}<option class='form-control options ice-cream-choice{{i}}' value='{{stock.inventoryPart}}' label='{{stock.sellingPrice}}'>  {% endfor %}</datalist>
-                                    <td><input type='number' class='form-control  quantity{{i}}' value='0' id='quantity{{i}}' min='0' placeholder='quantity' name='quantity{{i}}'/></td>
-                                    <td><input type='number' class='form-control  price{{i}}' value='0' id='price{{i}}}' min='0' placeholder='price' name='price{{i}}'/></td>
-                                    <td><input type='number' class='form-control discount{{i}}' value='0' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>
-                                    <td><input type='number' id='lineTotal{{i}}' class='form-control  lineTotal{{i}}' value='0' min='0' placeholder='total paid' name='totalAmountPaid{{i}}' /></td>    
+                                    <td><input type='number' class='form-control  quantity{{i}}' value='' id='quantity{{i}}' min='0' placeholder='quantity' name='quantity{{i}}'/></td>
+                                    <td><input type='number' class='form-control  price{{i}}' value='' id='price{{i}}}' min='0' placeholder='price' name='price{{i}}'/></td>
+                                    <td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>
+                                    <td><input type='number' id='lineTotal{{i}}' class='form-control  lineTotal{{i}}' value='' min='0' placeholder='total paid' name='totalAmountPaid{{i}}' /></td>    
                                 </tr>
                                  
                                 <script>
@@ -206,22 +206,9 @@
                                             if($('datalist').find("option[label='{{stock.sellingPrice}}']").filter(function(){  
                                            
                                            return $(this).val() == inputValue;  
-                                            //return $(this).find("opti4 on").attr("label") ;  
-                                            //return optionPrice;
+                                            
                                             })  ) {       
-                                            // your code as per need    
-                                            // alert(this.value); 
-
-                                           
-                                           // if($(this).parent(".ice-cream-choice{{i}}")){
                                             
-                                           
-                                            
-                                           //}
-                                            //optionprice.hasClass("optionprice{{stock.sellingPrice}}");
-                                          
-                                            
-
                                             console.log( inputValue);
                                            
                                             
@@ -231,12 +218,7 @@
 
                                             });
 
-                                            
-                                            
-
-
-
-
+                                        
                                     });
 
                                     
@@ -259,8 +241,8 @@
                                     <td></td>
                                     <td></td>
                                     <td> &nbsp;
-                                        <span  value=""><input class="amountDue" disabled value=''></input></span>
-                                        <span id="currencyy" value="">: SSP</span>
+                                        <input class="amountDue" name="GTT" disabled value=''></input>
+                                        <span id="currencyy" value="">:SSP</span>
                                         {% comment %} <input type="text" name="grandtotal" id="amountDue" disabled class="form-control"> {% endcomment %}
                                         &nbsp;
                                     </td>
@@ -273,7 +255,7 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button"    id="converttousd " class="converttousd btn btn-primary">Convert to USD</button>
+                        <button type="button" id="converttousd " class="converttousd btn btn-primary">Convert to USD</button>
                         <button onclick ="confirmPrint();" id="addrowp">Print Me</button>
                         <button type="submit" name="sender" class="btn btn-primary">Send Data</button></a>
                     </div>
