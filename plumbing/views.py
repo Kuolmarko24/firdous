@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+from locale import currency
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,6 +13,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.db.models import Sum
+from currencies.models import Currency
 
 # Create your views here.
 @login_required
@@ -57,7 +59,7 @@ def index(request):
     for custDataBank in customerBank:
         data.append(custDataBank.totalAmountPaid)
 
-     #new math 
+    #new math 
     newCustCashTotal = Customer.objects.filter(modeOfPayment='Cash').aggregate(Sum('totalAmountPaid'))['totalAmountPaid__sum']
     newCustBankTotal = Customer.objects.filter(modeOfPayment='Bank').aggregate(Sum('totalAmountPaid'))['totalAmountPaid__sum']
     newVendorPaidinCashTotal = Transfer.objects.filter(modeOfPayment='Cash').aggregate(Sum('amountPaid'))['amountPaid__sum']
@@ -189,17 +191,31 @@ def index(request):
     return render(request,'index.html',context)
 
 def customers(request):
-    
+    curry = Currency.objects.filter(code='SSP')
+    for currr in curry:
+        curr = currr.factor
     if request.method == 'POST':
         if 'Receipttotal' in request.POST:
             Receipttot = request.POST['Receipttotal'] 
-
+            convertedValue = request.POST['convertedValue'] 
             # accounts = Account.objects.filter(name='SJ & Firdous').order_by('-id')[0]
 
             try:
                 acc = Account.objects.get(name='SJ & Firdous')
-                acc.cashFromReceipts += float(Receipttot)
-                acc.save()
+                
+                print(convertedValue)
+                if convertedValue == '1':
+                    finValue = float(Receipttot) * float(curr)
+                    
+                    acc.cashFromReceipts += float(finValue)
+                    
+                    print(acc.cashFromReceipts)
+                    acc.save()
+                else:
+                    acc.cashFromReceipts += float(Receipttot)
+                    
+                    print(acc.cashFromReceipts)
+                    acc.save()
                 print(acc.cashFromReceipts)
                 return HttpResponse('success')
             except Account.DoesNotExist:
@@ -213,11 +229,12 @@ def customers(request):
         customercount = Customer.objects.all().count()
         stockscount = Stock.objects.all().count()
         vendorcount = Vendor.objects.all().count()
-        context ={'customers':customers,
+        context = {'customers':customers,
               'customercount':customercount,
               'stockscount':stockscount,
               'vendorcount':vendorcount,
-              'cash':cash
+              'cash':cash,
+              'curr':curr,
               }
     # customers = Customer.objects.filter(addedby=request.user)
     customers = Customer.objects.all()
@@ -225,9 +242,10 @@ def customers(request):
     
     customercount = Customer.objects.all().count()
     
-    context ={'customers':customers,
+    context = {'customers':customers,
                 'stocks':stocks,
-                'customercount':customercount
+                'customercount':customercount,
+                'curr':curr,
               }
     
     for stock in stocks:
@@ -412,7 +430,7 @@ def Receivepayment_detail(request,pk):
 
     context = {'customer': customer, 'inventorys': inventorys}
 
-    return render(request,'invoicepayment_detail.html')
+    return render(request,'invoicepayment_detail.html',context)
 
 def Writecheques_detail(request,pk):
     # cheqs = Cheques.objects.all()

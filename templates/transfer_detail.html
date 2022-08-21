@@ -23,7 +23,7 @@
                     {% csrf_token %}
                         
                         <div class="form-group">
-                            <label>Choose Account:</label>
+                            <label>Vendor:</label>
                             <select class="selectpicker form-control" id="customername" name="customername">
                                 <option value="{{ transfer.vendor.id }}" selected="selected">{{ transfer.vendor  }}</option>
                                 {% for transfer in transfers %}
@@ -44,7 +44,7 @@
 
                         <div class="form-group">
                             <label for="name">Amount paid:</label>
-                            <input type="text" name="amountpaid" class="form-control "id="branch" placeholder="{{ transfer.amountPaid|currency:request.session.currency }}{{ request.session.currency }}" value="{{ transfer.amountPaid|currency:request.session.currency }}{{ request.session.currency }}">
+                            <input type="text" name="amountpaid" class="form-control "id="branch" disabled placeholder="{{ transfer.amountPaid|currency:request.session.currency }}{{ request.session.currency }}" value="{{ transfer.amountPaid|currency:request.session.currency }}{{ request.session.currency }}">
                         </div>
 
                            <div class="form-group">
