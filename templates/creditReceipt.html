@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% load humanize %}
+{% block content %}
+
+<script>
+    var URL = "{% url 'customers' %}"
+</script>
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Credit Receipt</h4>
+            </div>
+            <span>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{message.tags}} alert-dismissible">
+                        {{ message|safe }}
+                        <a href="" class="close" and data-dismiss="alert">Close-X</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            </span>
+        </div>
+
+        <div id="printCustomerReceipt">
+            <div>
+                <div >
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Customer Credit</h4>
+<!--                                    <h4 class="modal-title">SJ&F HMS</h4>-->
+                        <h5 class="modal-title">P.O.BOX Malikia South Sudan</h5>
+                        <h5 class="modal-title">Behind Eden Commercial Bank</h5>
+                        <h5 class="modal-title">+211(0)924248033/+211(0)919253500</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <table class="table table-striped">
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                        <thead>
+                            <tr>
+                                <th>Cheque No</th>
+                                <th>Customer Name</th>
+                                <th>Date</th>
+                                <th>Mode of Payment</th>
+                                <th>Purchased From</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    {% comment %} <span id="chequeNo" name="chequeNo">R-id</span> {% endcomment %}
+                                    <input type="text" value="" id="chequeNo" name="chequeNo" />
+                                </td>
+
+                                <td>
+                                    <input type="text" name="customerName" required id="customerName" class="form-control">
+                                </td>
+
+                                <td>
+                                    <input type="date" id="date" required name="date" class="form-control">
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="modeOfPayment" id="modeOfPayment">
+                                            <option value="Cash">Cash</option>
+                                            <option value="Bank">Bank</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                   <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="purchasedFrom" id="purchasedFrom">
+                                            <option value="SJ">SJ</option>
+                                            <option value="Firdous">Firdous</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table order-list" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addItems">
+
+
+
+                                {% for i in loopdata %}
+                                <tr id="rowitem">
+                                    <td><input list='stock-items{{i}}' id='ice-cream-choice' name='ice-cream-choice{{i}}' class='form-control ice-cream-choice{{i}} '/></td>
+                                    <datalist id='stock-items{{i}}' class='stock-items ice-cream-choice{{i}}'>{% for stock in stocks %}<option class='form-control options ice-cream-choice{{i}}' value='{{stock.inventoryPart}}' label='{{stock.sellingPrice}}'>  {% endfor %}</datalist>
+                                    <td><input type='number' class='form-control  quantity{{i}}' value='' id='quantity{{i}}' min='0' placeholder='quantity' name='quantity{{i}}'/></td>
+                                    <td><input type='number' class='form-control  price{{i}}' value='' id='price{{i}}}' min='0' placeholder='price' name='price{{i}}'/></td>
+                                    <td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>
+                                    <td><input type='number' id='lineTotal{{i}}' class='form-control  lineTotal{{i}}' value='' min='0' placeholder='total paid' name='totalAmountPaid{{i}}' /></td>
+                                </tr>
+
+                                <script>
+
+                                    $( document ).ready(function() {
+                                       //var inputfieldVal = $('#chequeNo').val();
+                                       var  randoncheqno  =  Math.floor(1000 + Math.random() * 9000);
+                                       $('#chequeNo').val(randoncheqno);
+                                       //document.getElementById("chequeNo").value = randoncheqno;
+                                       $('#chequeNo').val() = cheqno;
+
+                                       });
+
+                                    $(function(){
+
+                                        $(".quantity{{i}},.price{{i}},.discount{{i}}, .lineTotal{{i}} ").bind('click keyup',function(){
+
+                                        //line_Total;
+                                        var lineTotal = 0;
+                                        var grandTotal = 0;
+                                        var originalDiscount  = 0;
+
+                                        var x = Number($(".quantity{{i}}").val());
+                                        var y = Number($(".price{{i}}").val());
+                                        var lineTotal = x * y;
+                                        $(".lineTotal{{i}}").val(lineTotal);
+
+
+                                        //Grand Total
+                                        var savegrandtotal = Number($(".lineTotal{{1}}").val()) +
+                                                             Number($(".lineTotal{{2}}").val()) +
+                                                             Number($(".lineTotal{{3}}").val()) +
+                                                             Number($(".lineTotal{{4}}").val()) +
+                                                             Number($(".lineTotal{{5}}").val());
+                                        var grandTotal =  savegrandtotal;
+                                        $(".amountDue").val(grandTotal);
+
+
+                                        // Discount
+
+                                        var disc =  Number($(".discount{{i}}").val());
+                                        if( disc != 0){
+
+                                        var price    = Number($(".price{{i}}").val());
+                                        var quantity = Number($(".quantity{{i}}").val());
+                                        var dec = (disc / 100).toFixed(2);
+                                        var product = Number(price  * dec);
+
+                                        var discount = Number(price) - Number(product) ;
+
+                                        $(".lineTotal{{i}}").val(discount * quantity);
+
+                                        // New Grandtotal after applying a dicount
+                                        var newgrandTotal = Number($(".lineTotal{{1}}").val()) +
+                                                            Number($(".lineTotal{{2}}").val()) +
+                                                            Number($(".lineTotal{{3}}").val()) +
+                                                            Number($(".lineTotal{{4}}").val()) +
+                                                            Number($(".lineTotal{{5}}").val());
+                                        $(".amountDue").val(newgrandTotal);
+
+                                        }else{
+
+                                            }
+
+                                     });
+
+                                //Currency Converter to USD
+
+                                        $('.converttousd').click(function(){
+                                        
+                                        var  usdValue = {{curr}} ; 
+                                        //document.getElementById("currencyy").innerText = ": USD"
+                                        var getPrice     = $(".price{{i}}").val();
+                                        var getlineTotal = $(".lineTotal{{i}}").val();
+                                        var getgrandTotal = $(".amountDue").val();
+
+                                    
+                                        var setprice      = parseFloat(getPrice / usdValue).toFixed(2);
+                                        var setlineTotal  = parseFloat(getlineTotal / usdValue).toFixed(2);
+                                        var setgrandTotal = Number($(".lineTotal{{1}}").val()) +
+                                                            Number($(".lineTotal{{2}}").val()) +
+                                                            Number($(".lineTotal{{3}}").val()) +
+                                                            Number($(".lineTotal{{4}}").val()) +
+                                                            Number($(".lineTotal{{5}}").val());
+                                        //setgrandTotal.toFixed(2);
+
+                                        Number($(".price{{i}}").val(setprice ));
+                                        Number($(".lineTotal{{i}}").val( setlineTotal ));
+                                        Number($(".amountDue").val(setgrandTotal.toFixed(2)));
+
+                                        $(this).addClass("disabled");
+
+                                        });
+                            
+
+                                //Function that fills Price when Item is chosen FROM DATALIST
+
+                                       $(".ice-cream-choice{{i}}").on('change', function () { 
+                                           var inputValue = $(this).val();  
+                                           var optionPrice = $("#stock-items{{i}}").find("option").attr("label");
+
+                                            if($('datalist').find("option[label='{{stock.sellingPrice}}']").filter(function(){  
+                                           
+                                           return $(this).val() == inputValue;  
+                                            
+                                            })  ) {       
+                                             }
+
+                                            });
+
+                                        
+                                    });
+
+                                    
+                                </script>
+
+
+
+                                {% endfor %}
+                                
+                                
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                    <label>Grand Total</label>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td> &nbsp;
+                                        <input class="amountDue" name="GTT" value=''></input>
+                                        <span id="currencyy" value="">:-{{request.session.currency }}</span>
+                                        {% comment %} <input type="text" name="grandtotal" id="amountDue" disabled class="form-control"> {% endcomment %}
+                                        &nbsp;
+                                    </td>
+                                    
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        {% if request.session.currency == 'SSP' %}
+                        <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button>
+
+                        {% else %}
+                        <input type="text" name="usdd" value="usd" style="border: none;
+                        background-color: transparent;
+                        resize: none;
+                        outline: none;"/>
+                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button>
+
+                        {% endif %}
+                        <button onclick ="confirmPrint();" id="addrowp">Print Me</button>
+                        <button type="submit" id="sender" name="sender" class="btn btn-primary">Send Data</button></a>
+                    </div>
+                </form>
+                
+                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmPrint() {
+        var proceed = confirm("Are you sure you want to print?");
+        if (proceed) {
+            
+            document.getElementById("sender").click();
+            window.print();
+            
+        }
+        else{
+            alert('There was an error submitting the data');
+        }
+        //don't proceed
+    }
+      
+
+   
+
+
+</script>
+{% endblock content %}

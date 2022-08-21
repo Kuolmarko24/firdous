@@ -325,7 +325,37 @@ class CustomerReceipt(models.Model):
 
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
 
+# Quotation Receipt
+class QuotationReceipt(models.Model):
+    quotationNumber = models.CharField(max_length=150)
+    customerName = models.CharField(max_length=150)
+    modeOfPayment = models.CharField(max_length=100, default='Cash')
+    item_purchased = models.CharField(max_length=250)
+    purchasedFrom = models.CharField(max_length=150, blank=True, default=0)
+    quantity = models.CharField(max_length=150, blank=True, default=0)
+    price = models.CharField(max_length=150, blank=True, default=0)
+    discount = models.CharField(max_length=150, blank=True, default=0)
+    totalAmountPaid = models.CharField(max_length=150, blank=True, default=0)
+    # AmountAfterDiscount = models.FloatField()
+    balance = models.CharField(max_length=150, blank=True, default=0)
 
+    date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
+
+# Credit Receipt
+class CreditReceipt(models.Model):
+    creditNumber = models.CharField(max_length=150)
+    customerName = models.CharField(max_length=150)
+    modeOfPayment = models.CharField(max_length=100, default='Cash')
+    item_purchased = models.CharField(max_length=250)
+    purchasedFrom = models.CharField(max_length=150, blank=True, default=0)
+    quantity = models.CharField(max_length=150, blank=True, default=0)
+    price = models.CharField(max_length=150, blank=True, default=0)
+    discount = models.CharField(max_length=150, blank=True, default=0)
+    totalAmountPaid = models.CharField(max_length=150, blank=True, default=0)
+    # AmountAfterDiscount = models.FloatField()
+    # balance = models.CharField(max_length=150, blank=True, default=0)
+
+    date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
     # # Calcuting discount
     # def calculate_discount(self):
     #     mydiscount = ((self.discount/100)*(self.item_purchased.sellingPrice*float(self.quantity)))
@@ -339,3 +369,7 @@ class CustomerReceipt(models.Model):
 
     def __str__(self):
         return str(self.receiptNumber)
+    def __str__(self):
+        return str(self.creditNumber)
+    def __str__(self):
+        return str(self.quotationNumber)

@@ -32,6 +32,15 @@ class CustomerReceiptAdmin(admin.ModelAdmin):
     list_display = ['receiptNumber','customerName']
     search_fields = ['receiptNumber', 'customerName']
 
+class QuotationReceiptAdmin(admin.ModelAdmin):
+    list_display = ['quotationNumber','customerName']
+    search_fields = ['quotationNumber', 'customerName']
+
+
+class CreditReceiptAdmin(admin.ModelAdmin):
+    list_display = ['creditNumber','customerName']
+    search_fields = ['creditNumber', 'customerName']
+
 admin.site.register(Vendor),
 admin.site.register(Stock,StockAdmin),
 admin.site.register(Customer, CustomerAdmin),
@@ -41,6 +50,8 @@ admin.site.register(PurchaseOrder, PurchaseOrderAdmin),
 admin.site.register(Cheques,ChequesAdmin),
 admin.site.register(Payable),
 admin.site.register(CustomerReceipt,CustomerReceiptAdmin),
+admin.site.register(QuotationReceipt,QuotationReceiptAdmin),
+admin.site.register(CreditReceipt,CreditReceiptAdmin)
 admin.site.register(Account,AccountAdmin),
 admin.site.register(Transfer,TransferAdmin),
 

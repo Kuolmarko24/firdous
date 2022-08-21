@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from reportlab.pdfgen import canvas
 # from reportlab.lib.units import inch
 # from reportlab.lib.pagesizes import letter
-from .models import CustomerReceipt, Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder
+from .models import CustomerReceipt, CreditReceipt, QuotationReceipt, Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -323,6 +323,171 @@ def customerReceipt(request):
         'curr':curr,
         }
     return render(request,'customerReceipt.html',context)
+
+# Quotation(Proforma)
+def proformaReceipt(request):
+    curry = Currency.objects.filter(code='SSP')
+    for currr in curry:
+        curr = currr.factor
+    stocks = Stock.objects.all()
+    if request.method == 'POST':
+        if 'sender' in request.POST:
+
+            try:
+                quotationNumber = request.POST.get('chequeNo')
+                customerName = request.POST.get('customerName')
+                modeOfPayment = request.POST.get('modeOfPayment')
+                item_purchased = request.POST.get('ice-cream-choice1') + "--" + request.POST.get(
+                    'ice-cream-choice2') + "--" + request.POST.get('ice-cream-choice3') + "--" + request.POST.get(
+                    'ice-cream-choice4') + request.POST.get('ice-cream-choice5')
+                # item = get_object_or_404(Stock, inventoryPart=item_purchased)
+                purchasedFrom = request.POST.get('purchasedFrom')
+                quantity = request.POST.get('quantity1') + "--" + request.POST.get(
+                    'quantity2') + "--" + request.POST.get('quantity3') + "--" + request.POST.get(
+                    'quantity4') + "--" + request.POST.get('quantity5')
+                price = request.POST.get('price1') + "--" + request.POST.get('price2') + "--" + request.POST.get(
+                    'price3') + "--" + request.POST.get('price4') + "--" + request.POST.get('price5')
+                discount = request.POST.get('discount1') + "--" + request.POST.get(
+                    'discount2') + "--" + request.POST.get('discount3') + "--" + request.POST.get(
+                    'discount4') + "--" + request.POST.get('discount5')
+
+                gtt = request.POST.get('GTT')
+                # I DONT NEED THIS IN QUOTATION RECCEIPT
+                # Get the total and send it to the cash account
+                totalAmountPaid = request.POST.get('totalAmountPaid1') + "--" + request.POST.get(
+                    'totalAmountPaid2') + "--" + request.POST.get('totalAmountPaid3') + "--" + request.POST.get(
+                    'totalAmountPaid4') + "--" + request.POST.get('totalAmountPaid5')
+                date = request.POST.get('date')
+
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice1'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity1'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice2'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity2'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice3'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity3'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity4'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice5'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity5'))
+
+                QuotationReceipt.objects.create(
+                    quotationNumber=quotationNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    discount=discount,
+                    totalAmountPaid=totalAmountPaid,
+                    date=date,
+                )
+                # # i dont need this too
+                # # This below gets the cash inserted and adds it onto the cash from receipts
+                # currencyy = request.POST.get('usdd')
+                # print(currencyy)
+                # if currencyy == "usd":
+                #     curryr = Currency.objects.filter(code='SSP')
+                #     for currr in curryr:
+                #         curr = currr.factor
+                #     usd2ssp = float(gtt) * float(curr)
+                #     Account.objects.filter(name='SJ & Firdous').update(
+                #         cashFromReceipts=F('cashFromReceipts') + float(usd2ssp))
+                #
+                # Account.objects.filter(name='SJ & Firdous').update(cashFromReceipts=F('cashFromReceipts') + float(gtt))
+                #
+                # print("Added the total amount from receipts to cashFromReceipts account")
+
+            except QuotationReceipt.DoesNotExist:
+                return HttpResponse('Fail')
+    context = {
+        'loopdata': [1, 2, 3, 4, 5],
+        'stocks': stocks,
+        'curr': curr,
+    }
+    return render(request, 'quotationReceipt.html', context)
+
+# Credit Receipt
+def creditReceipt(request):
+    curry = Currency.objects.filter(code='SSP')
+    for currr in curry:
+        curr = currr.factor
+    stocks = Stock.objects.all()
+    if request.method == 'POST':
+        if 'sender' in request.POST:
+
+            try:
+                creditNumber = request.POST.get('chequeNo')
+                customerName = request.POST.get('customerName')
+                modeOfPayment = request.POST.get('modeOfPayment')
+                item_purchased = request.POST.get('ice-cream-choice1') + "--" + request.POST.get(
+                    'ice-cream-choice2') + "--" + request.POST.get('ice-cream-choice3') + "--" + request.POST.get(
+                    'ice-cream-choice4') + request.POST.get('ice-cream-choice5')
+                # item = get_object_or_404(Stock, inventoryPart=item_purchased)
+                purchasedFrom = request.POST.get('purchasedFrom')
+                quantity = request.POST.get('quantity1') + "--" + request.POST.get(
+                    'quantity2') + "--" + request.POST.get('quantity3') + "--" + request.POST.get(
+                    'quantity4') + "--" + request.POST.get('quantity5')
+                price = request.POST.get('price1') + "--" + request.POST.get('price2') + "--" + request.POST.get(
+                    'price3') + "--" + request.POST.get('price4') + "--" + request.POST.get('price5')
+                discount = request.POST.get('discount1') + "--" + request.POST.get(
+                    'discount2') + "--" + request.POST.get('discount3') + "--" + request.POST.get(
+                    'discount4') + "--" + request.POST.get('discount5')
+
+                gtt = request.POST.get('GTT')
+                # I want this to be added to receivable account(debtorbalance account)
+                # Get the total and send it to the receivable coz these are guys who have taken good on credit
+                totalAmountPaid = request.POST.get('totalAmountPaid1') + "--" + request.POST.get(
+                    'totalAmountPaid2') + "--" + request.POST.get('totalAmountPaid3') + "--" + request.POST.get(
+                    'totalAmountPaid4') + "--" + request.POST.get('totalAmountPaid5')
+                date = request.POST.get('date')
+
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice1'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity1'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice2'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity2'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice3'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity3'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity4'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice5'))).update(
+                    piecesQuantity=F('piecesQuantity') - request.POST.get('quantity5'))
+
+                CreditReceipt.objects.create(
+                    creditNumber=creditNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    discount=discount,
+                    totalAmountPaid=totalAmountPaid,
+                    date=date,
+                )
+                # This below gets the cash inserted and adds it onto the cash from receipts
+                currencyy = request.POST.get('usdd')
+                print(currencyy)
+                if currencyy == "usd":
+                    curryr = Currency.objects.filter(code='SSP')
+                    for currr in curryr:
+                        curr = currr.factor
+                    usd2ssp = float(gtt) * float(curr)
+                    Account.objects.filter(name='SJ & Firdous').update(
+                        debtorBalance=F('debtorBalance') + float(usd2ssp))
+
+                Account.objects.filter(name='SJ & Firdous').update(debtorBalance=F('debtorBalance') + float(gtt))
+
+                print("Added the total amount from receipts to cashFromReceipts account")
+
+            except CreditReceipt.DoesNotExist:
+                return HttpResponse('Fail')
+    context = {
+        'loopdata': [1, 2, 3, 4, 5],
+        'stocks': stocks,
+        'curr': curr,
+    }
+    return render(request, 'creditReceipt.html', context)
 
 
 def customers(request):

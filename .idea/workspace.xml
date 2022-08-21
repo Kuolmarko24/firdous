@@ -4,7 +4,11 @@
     <list default="true" id="4031efda-f1a8-4f96-9706-b31a5fe6401c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/customers.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/customers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plumbing/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plumbing/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plumbing/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plumbing/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +28,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="29eG7HEC47gWVB8vK9NxM9zS0ox" />
+  <component name="ProjectId" id="2DL1nqpwkKF7Et1CwHUgeKJwSk3" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -35,45 +39,18 @@
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/PycharmProjects/greatKart&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/Documents/firdous&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Admin\PycharmProjects\firdous\templates" />
-    </key>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="4031efda-f1a8-4f96-9706-b31a5fe6401c" name="Changes" comment="" />
-      <created>1653465969146</created>
+      <created>1660463738944</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1653465969146</updated>
+      <updated>1660463738944</updated>
     </task>
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/plumbing/views.py</url>
-          <line>639</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
