@@ -276,16 +276,17 @@ def customerReceipt(request):
                 price= request.POST.get('price1')+"--"+request.POST.get('price2')+"--"+request.POST.get('price3')+"--"+request.POST.get('price4')+"--"+request.POST.get('price5')
                 discount= request.POST.get('discount1')+"--"+request.POST.get('discount2')+"--"+request.POST.get('discount3')+"--"+request.POST.get('discount4')+"--"+request.POST.get('discount5')
                 
-                gtt = request.POST.get('GTT') 
+                gtt = request.POST.get('GTT')
+                
                 # Get the total and send it to the cash account
                 totalAmountPaid= request.POST.get('totalAmountPaid1')+"--"+request.POST.get('totalAmountPaid2')+"--"+request.POST.get('totalAmountPaid3')+"--"+request.POST.get('totalAmountPaid4')+"--"+request.POST.get('totalAmountPaid5')
                 date= request.POST.get('date')
                 
-                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice1'))).update(piecesQuantity=F('piecesQuantity')-1)
-                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice2'))).update(piecesQuantity=F('piecesQuantity')-1)
-                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice3'))).update(piecesQuantity=F('piecesQuantity')-1)
-                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(piecesQuantity=F('piecesQuantity')-1)
-                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice5'))).update(piecesQuantity=F('piecesQuantity')-1)
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice1'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity1'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice2'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity2'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice3'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity3'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity4'))
+                Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice5'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity5'))
 
                 CustomerReceipt.objects.create(
                     receiptNumber=receiptNumber,
@@ -301,9 +302,17 @@ def customerReceipt(request):
                     )
 
                 # This below gets the cash inserted and adds it onto the cash from receipts
-                acc = Account(name='SJ & Firdous')
-                acc.cashFromReceipts = acc.cashFromReceipts + gtt
-                acc.save()
+                currencyy = request.POST.get('usdd')
+                print(currencyy)
+                if currencyy == "usd":
+                    curryr = Currency.objects.filter(code='SSP')
+                    for currr in curryr:
+                        curr = currr.factor
+                    usd2ssp = float(gtt) * float(curr)
+                    Account.objects.filter(name='SJ & Firdous').update(cashFromReceipts=F('cashFromReceipts') + float(usd2ssp))
+
+                Account.objects.filter(name='SJ & Firdous').update(cashFromReceipts=F('cashFromReceipts') + float(gtt))
+
                 print("Added the total amount from receipts to cashFromReceipts account")
 
             except CustomerReceipt.DoesNotExist:

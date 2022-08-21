@@ -57,15 +57,15 @@
                             <tr>
                                 <td>
                                     {% comment %} <span id="chequeNo" name="chequeNo">R-id</span> {% endcomment %}
-                                    <input type="text" value="" id="chequeNo" disabled name="chequeNo" />
+                                    <input type="text" value="" id="chequeNo" name="chequeNo" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="customerName" id="customerName" class="form-control">
+                                    <input type="text" name="customerName" required id="customerName" class="form-control">
                                 </td>
 
                                 <td>
-                                    <input type="date" id="date" name="date" class="form-control">
+                                    <input type="date" id="date" required name="date" class="form-control">
                                 </td>
                                 <td>
                                     <div class="form-group">
@@ -119,8 +119,10 @@
                                        //var inputfieldVal = $('#chequeNo').val();
                                        var  randoncheqno  =  Math.floor(1000 + Math.random() * 9000);
                                        $('#chequeNo').val(randoncheqno);
-                                       no  ;
-                                    });
+                                       //document.getElementById("chequeNo").value = randoncheqno;
+                                       $('#chequeNo').val() = cheqno;
+                                        
+                                       });
 
                                     $(function(){
 
@@ -138,7 +140,11 @@
 
                                         
                                         //Grand Total
-                                        var savegrandtotal = Number($(".lineTotal{{1}}").val() + $(".lineTotal{{2}}").val() + $(".lineTotal{{3}}").val() + $(".lineTotal{{4}}").val() + $(".lineTotal{{5}}").val());
+                                        var savegrandtotal = Number($(".lineTotal{{1}}").val()) +
+                                                             Number($(".lineTotal{{2}}").val()) + 
+                                                             Number($(".lineTotal{{3}}").val()) + 
+                                                             Number($(".lineTotal{{4}}").val()) + 
+                                                             Number($(".lineTotal{{5}}").val());
                                         var grandTotal =  savegrandtotal;
                                         $(".amountDue").val(grandTotal);
 
@@ -158,7 +164,11 @@
                                         $(".lineTotal{{i}}").val(discount * quantity);
                                         
                                         // New Grandtotal after applying a dicount
-                                        var newgrandTotal = Number($(".lineTotal{{1}}").val()) + Number($(".lineTotal{{2}}").val()) + Number($(".lineTotal{{3}}").val()) + Number($(".lineTotal{{4}}").val()) + Number($(".lineTotal{{5}}").val());
+                                        var newgrandTotal = Number($(".lineTotal{{1}}").val()) +
+                                                            Number($(".lineTotal{{2}}").val()) +
+                                                            Number($(".lineTotal{{3}}").val()) +
+                                                            Number($(".lineTotal{{4}}").val()) +
+                                                            Number($(".lineTotal{{5}}").val());
                                         $(".amountDue").val(newgrandTotal);
 
                                         }else{
@@ -170,11 +180,9 @@
                                 //Currency Converter to USD
 
                                         $('.converttousd').click(function(){
-                                          //e.preventDefault();
-                                
+                                        
                                         var  usdValue = {{curr}} ; 
-                                
-
+                                        //document.getElementById("currencyy").innerText = ": USD"
                                         var getPrice     = $(".price{{i}}").val();
                                         var getlineTotal = $(".lineTotal{{i}}").val();
                                         var getgrandTotal = $(".amountDue").val();
@@ -182,17 +190,21 @@
                                     
                                         var setprice      = parseFloat(getPrice / usdValue).toFixed(2);
                                         var setlineTotal  = parseFloat(getlineTotal / usdValue).toFixed(2);
-                                        var setgrandTotal =  parseFloat($(".lineTotal{{1}}").val() + $(".lineTotal{{2}}").val() + $(".lineTotal{{3}}").val() + $(".lineTotal{{4}}").val() + $(".lineTotal{{5}}").val()).toFixed(2) ;
+                                        var setgrandTotal = Number($(".lineTotal{{1}}").val()) +
+                                                            Number($(".lineTotal{{2}}").val()) +
+                                                            Number($(".lineTotal{{3}}").val()) +
+                                                            Number($(".lineTotal{{4}}").val()) +
+                                                            Number($(".lineTotal{{5}}").val());
                                         //setgrandTotal.toFixed(2);
 
                                         Number($(".price{{i}}").val(setprice ));
                                         Number($(".lineTotal{{i}}").val( setlineTotal ));
-                                        Number($(".amountDue").val(setgrandTotal));
+                                        Number($(".amountDue").val(setgrandTotal.toFixed(2)));
 
                                         $(this).addClass("disabled");
 
                                         });
-                            7
+                            
 
                                 //Function that fills Price when Item is chosen FROM DATALIST
 
@@ -200,21 +212,12 @@
                                            var inputValue = $(this).val();  
                                            var optionPrice = $("#stock-items{{i}}").find("option").attr("label");
 
-                                           
-                                           
-                                          
                                             if($('datalist').find("option[label='{{stock.sellingPrice}}']").filter(function(){  
                                            
                                            return $(this).val() == inputValue;  
                                             
                                             })  ) {       
-                                            
-                                            console.log( inputValue);
-                                           
-                                            
-                                            
                                              }
-                                             console.log(String(optionPrice));
 
                                             });
 
@@ -241,8 +244,8 @@
                                     <td></td>
                                     <td></td>
                                     <td> &nbsp;
-                                        <input class="amountDue" name="GTT" disabled value=''></input>
-                                        <span id="currencyy" value="">:SSP</span>
+                                        <input class="amountDue" name="GTT" value=''></input>
+                                        <span id="currencyy" value="">:-{{request.session.currency }}</span>
                                         {% comment %} <input type="text" name="grandtotal" id="amountDue" disabled class="form-control"> {% endcomment %}
                                         &nbsp;
                                     </td>
@@ -255,9 +258,19 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" id="converttousd " class="converttousd btn btn-primary">Convert to USD</button>
+                        {% if request.session.currency == 'SSP' %}
+                        <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button>
+
+                        {% else %}
+                        <input type="text" name="usdd" value="usd" style="border: none;
+                        background-color: transparent;
+                        resize: none;
+                        outline: none;"/>
+                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button>
+
+                        {% endif %}
                         <button onclick ="confirmPrint();" id="addrowp">Print Me</button>
-                        <button type="submit" name="sender" class="btn btn-primary">Send Data</button></a>
+                        <button type="submit" id="sender" name="sender" class="btn btn-primary">Send Data</button></a>
                     </div>
                 </form>
                 
@@ -273,7 +286,9 @@
         var proceed = confirm("Are you sure you want to print?");
         if (proceed) {
             
+            document.getElementById("sender").click();
             window.print();
+            
         }
         else{
             alert('There was an error submitting the data');
