@@ -6,8 +6,10 @@ from .models import *
 class StockAdmin(admin.ModelAdmin):
     list_display = ['inventoryPart','picture_tag', 'costPrice','piecesQuantity','vendorSupplied']
     readonly_fields = ['percentageProfit']
+    search_fields = ['inventoryPart']
 
 class CustomerAdmin(admin.ModelAdmin):
+    search_fields = ['customerName']
     list_display = ['customerName','item_purchased','quantity', 'order_status','date', 'due_date']
     readonly_fields = ['balance','order_status']
 
@@ -28,6 +30,7 @@ class TransferAdmin(admin.ModelAdmin):
 
 class CustomerReceiptAdmin(admin.ModelAdmin):
     list_display = ['receiptNumber','customerName']
+    search_fields = ['receiptNumber', 'customerName']
 
 admin.site.register(Vendor),
 admin.site.register(Stock,StockAdmin),
