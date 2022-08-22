@@ -371,5 +371,5 @@ class CreditReceipt(models.Model):
         return str(self.receiptNumber)
     def __str__(self):
         return str(self.creditNumber)
-    def __str__(self):
-        return str(self.quotationNumber)
+    # def __str__(self):
+    #     return str(self.quotationNumber)

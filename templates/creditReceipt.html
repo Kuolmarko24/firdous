@@ -32,20 +32,19 @@
                 <div >
 
                     <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">Customer Credit</h4>
+                    <div style="text-align:right">
+                        <h4 class="modal-title">Credit Receipt</h4>
 <!--                                    <h4 class="modal-title">SJ&F HMS</h4>-->
                         <h5 class="modal-title">P.O.BOX Malikia South Sudan</h5>
                         <h5 class="modal-title">Behind Eden Commercial Bank</h5>
                         <h5 class="modal-title">+211(0)924248033/+211(0)919253500</h5>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <table class="table table-striped">
                         <form method="POST" action="">
                             {% csrf_token %}
                         <thead>
                             <tr>
-                                <th>Cheque No</th>
+                                <th>Receipt No</th>
                                 <th>Customer Name</th>
                                 <th>Date</th>
                                 <th>Mode of Payment</th>
@@ -57,7 +56,7 @@
                             <tr>
                                 <td>
                                     {% comment %} <span id="chequeNo" name="chequeNo">R-id</span> {% endcomment %}
-                                    <input type="text" value="" id="chequeNo" disabled name="chequeNo" />
+                                    <input type="text" value="" id="chequeNo" name="chequeNo" />
                                 </td>
 
                                 <td>
