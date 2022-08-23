@@ -20,9 +20,9 @@
                     <h3 class="box-title">Cash Invoice Details</h3>
 
 
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                    Create Invoice Receipt
-                    </button>
+<!--                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">-->
+<!--                    Create Invoice Receipt-->
+<!--                    </button>-->
 
 
                     <!-- The Modal -->
@@ -141,7 +141,7 @@
                                 <th>Total Paid</th>
                                 <th>Balance</th>
                                 <th>date</th>
-                                <th>Action</th>
+<!--                                <th>Action</th>-->
                             </tr>
                         </thead>
                         <tbody>
@@ -155,9 +155,9 @@
                                 <td>{{ inv.totalAmountPaid |currency:request.session.currency }} {{ request.session.currency }}</td>
                                 <td>{{ inv.balance |currency:request.session.currency }} {{ request.session.currency }}</td>
                                 <td>{{ inv.date }}</td>
-                                <td>
-                                    <a href="{% url 'invoicepaymentdetail' inv.id %}" class="btn btn-primary">Detail Page</a>
-                                </td>
+<!--                                <td>-->
+<!--                                    <a href="#" class="btn btn-primary">Detail Page</a>-->
+<!--                                </td>-->
                             </tr>
                         
                         {% endfor %}

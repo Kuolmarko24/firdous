@@ -39,7 +39,9 @@
                 <div class="white-box">
 
                     <h3 class="box-title">Customer Details</h3>
-                        <a href="{% url 'customerReceipt' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Create Sales Receipt</a>
+                        <a href="{% url 'customerReceipt' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Create Sales Receipt</a> ||
+                        <a href="{% url 'quotationReceipt' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Create Proforma Receipt</a> ||
+                        <a href="{% url 'creditReceipt' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Create Credit Receipt</a>
                     <!-- The Modal -->
                     <div class="modal model-print" id="myModal">
                         <div class="modal-dialog">

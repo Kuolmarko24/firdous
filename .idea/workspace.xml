@@ -4,9 +4,9 @@
     <list default="true" id="4031efda-f1a8-4f96-9706-b31a5fe6401c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plumbing/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/creditReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/creditReceipt.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/customerReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/customerReceipt.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plumbing/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/plumbing/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cash.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cash.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/customers.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/customers.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/quotationReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/quotationReceipt.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

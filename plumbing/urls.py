@@ -26,7 +26,7 @@ urlpatterns = [
      # path('receipts/', views.Receipts, name='receipts'),
 
      path('customerdetail/<int:pk>', views.Customerdetailfunc, name='customerdetail'),
-     path('invoicepaymentdetail/<int:pk>',views.Receivepayment_detail, name='invoicepaymentdetail'),
+     #path('invoicepaymentdetail/<int:pk>',views.Receivepayment_detail, name='invoicepaymentdetail'),
      # path('paymentreceipt/', views.paymentReceipt, name='paymentreceipt'),
      path('statistics/', views.statistics, name='statistics'),
      # path('credit/', views.credit, name='credit'),
