@@ -274,7 +274,7 @@ def customerReceipt(request):
                 purchasedFrom= request.POST.get('purchasedFrom')
                 quantity= request.POST.get('quantity1')+"--"+request.POST.get('quantity2')+"--"+request.POST.get('quantity3')+"--"+request.POST.get('quantity4')+"--"+request.POST.get('quantity5')
                 price= request.POST.get('price1')+"--"+request.POST.get('price2')+"--"+request.POST.get('price3')+"--"+request.POST.get('price4')+"--"+request.POST.get('price5')
-                discount= request.POST.get('discount1')+"--"+request.POST.get('discount2')+"--"+request.POST.get('discount3')+"--"+request.POST.get('discount4')+"--"+request.POST.get('discount5')
+                discount= request.POST.get('discount')
                 
                 gtt = request.POST.get('GTT')
                 

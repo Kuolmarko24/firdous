@@ -318,10 +318,10 @@ class CustomerReceipt(models.Model):
     purchasedFrom = models.CharField(max_length=150, blank=True,default=0)
     quantity =  models.CharField(max_length=150, blank=True,default=0)
     price = models.CharField(max_length=150, blank=True,default=0)
-    discount =  models.CharField(max_length=150, blank=True,default=0)
+    discountIndividualItem =  models.CharField(max_length=150, blank=True,default=0)
     totalAmountPaid =  models.CharField(max_length=150, blank=True,default=0)
     # AmountAfterDiscount = models.FloatField()
-    balance = models.CharField(max_length=150, blank=True,default=0)
+    discount = models.CharField(max_length=150, blank=True,default=0)
 
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
 

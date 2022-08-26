@@ -40,7 +40,7 @@
                         <h5 class="modal-title">+211(0)924248033/+211(0)919253500</h5>
                     </div>
                     <table class="table table-striped">
-                        <form method="POST" action="">
+                        <form method="POST" action="" id="theForm" name="theForm">
                             {% csrf_token %}
                         <thead>
                             <tr>
@@ -94,7 +94,7 @@
                                     <th>Item</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
-                                    <th>Discount</th>
+                                    {% comment %} <th>Discount</th> {% endcomment %}
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -108,7 +108,7 @@
                                     <datalist id='stock-items{{i}}' class='stock-items ice-cream-choice{{i}}'>{% for stock in stocks %}<option class='form-control options ice-cream-choice{{i}}' value='{{stock.inventoryPart}}' label='{{stock.sellingPrice}}'>  {% endfor %}</datalist>
                                     <td><input type='number' class='form-control  quantity{{i}}' value='' id='quantity{{i}}' min='0' placeholder='quantity' name='quantity{{i}}'/></td>
                                     <td><input type='number' class='form-control  price{{i}}' value='' id='price{{i}}}' min='0' placeholder='price' name='price{{i}}'/></td>
-                                    <td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>
+                                    {% comment %} <td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td> {% endcomment %}
                                     <td><input type='number' id='lineTotal{{i}}' class='form-control  lineTotal{{i}}' value='' min='0' placeholder='total paid' name='totalAmountPaid{{i}}' /></td>    
                                 </tr>
                                  
@@ -125,12 +125,12 @@
 
                                     $(function(){
 
-                                        $(".quantity{{i}},.price{{i}},.discount{{i}}, .lineTotal{{i}} ").bind('click keyup',function(){
+                                        $(".quantity{{i}},.price{{i}}, .lineTotal{{i}} ").bind('click keyup',function(){
                                                 
                                         //line_Total;
                                         var lineTotal = 0;
                                         var grandTotal = 0;
-                                        var originalDiscount  = 0;
+                                        //var originalDiscount  = 0;
 
                                         var x = Number($(".quantity{{i}}").val());
                                         var y = Number($(".price{{i}}").val());
@@ -150,7 +150,7 @@
 
                                         // Discount
                                         
-                                        var disc =  Number($(".discount{{i}}").val());
+                                        //var disc =  Number($(".discount{{i}}").val());
                                         if( disc != 0){
                                         
                                         var price    = Number($(".price{{i}}").val());
@@ -158,9 +158,9 @@
                                         var dec = (disc / 100).toFixed(2);
                                         var product = Number(price  * dec);
                                         
-                                        var discount = Number(price) - Number(product) ;
+                                        //var discount = Number(price) - Number(product) ;
                                         
-                                        $(".lineTotal{{i}}").val(discount * quantity);
+                                        //$(".lineTotal{{i}}").val(discount * quantity);
                                         
                                         // New Grandtotal after applying a dicount
                                         var newgrandTotal = Number($(".lineTotal{{1}}").val()) +
@@ -238,6 +238,12 @@
                                 
                                 <tr>
                                     <td>
+                                        <label>Discount</label>
+                                    </td>
+                                    <td>
+                                        <input type='number' class='form-control' value='' id='discount' min='0' placeholder='% discount' name='discount'/></td>
+
+                                    <td>
                                     <label>Grand Total</label>
                                     </td>
                                     <td></td>
@@ -258,18 +264,18 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         {% if request.session.currency == 'SSP' %}
-                        <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button>
+                        {% comment %} <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button> {% endcomment %}
 
                         {% else %}
-                        <input type="text" name="usdd" value="usd" style="border: none;
+                        {% comment %} <input type="text" name="usdd" value="usd" style="border: none;
                         background-color: transparent;
                         resize: none;
                         outline: none;"/>
-                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button>
+                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button> {% endcomment %}
 
                         {% endif %}
-                        <button onclick ="confirmPrint();" id="addrowp">Print Me</button>
-                        <button type="submit" id="sender" name="sender" class="btn btn-primary">Send Data</button></a>
+                        {% comment %} <button onclick ="confirmPrint();" id="addrowp">Print Me</button> {% endcomment %}
+                        <button type="submit" id="sender" name="sender" onclick="confirmPrint();" class="btn btn-primary">Print / Send </button></a>
                     </div>
                 </form>
                 
@@ -284,8 +290,10 @@
     function confirmPrint() {
         var proceed = confirm("Are you sure you want to print?");
         if (proceed) {
-            
-            document.getElementById("sender").click();
+
+            var button = document.getElementById('theForm');
+            button.submit(); 
+            console.log("Successful payment");
             window.print();
             
         }
