@@ -5,6 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/creditReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/creditReceipt.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/customerReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/customerReceipt.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/quotationReceipt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/quotationReceipt.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

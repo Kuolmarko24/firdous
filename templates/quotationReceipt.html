@@ -13,7 +13,7 @@
     <div class="container-fluid">
         <div class="row bg-title">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h4 class="page-title">Proforma</h4>
+                <h4 class="page-title">Proforma Invoice</h4>
                 <a href="{% url 'customers' %}" class="waves-effect"><i class="fa fa-money fa-fw" aria-hidden="true"></i>Back</a>
             </div>
             <span>
@@ -34,7 +34,7 @@
 
                     <!-- Modal Header -->
                     <div style="text-align:right">
-                        <h4 class="modal-title">Proforma Receipt</h4>
+                        <h4 class="modal-title">Proforma Invoice Receipt</h4>
 <!--                                    <h4 class="modal-title">SJ&F HMS</h4>-->
                         <h5 class="modal-title">P.O.BOX Malikia South Sudan</h5>
                         <h5 class="modal-title">Behind Eden Commercial Bank</h5>
@@ -96,7 +96,7 @@
                                     <th>Item</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
-                                    <th>Discount</th>
+<!--                                    <th>Discount</th>-->
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -110,7 +110,7 @@
                                     <datalist id='stock-items{{i}}' class='stock-items ice-cream-choice{{i}}'>{% for stock in stocks %}<option class='form-control options ice-cream-choice{{i}}' value='{{stock.inventoryPart}}' label='{{stock.sellingPrice}}'>  {% endfor %}</datalist>
                                     <td><input type='number' class='form-control  quantity{{i}}' value='' id='quantity{{i}}' min='0' placeholder='quantity' name='quantity{{i}}'/></td>
                                     <td><input type='number' class='form-control  price{{i}}' value='' id='price{{i}}}' min='0' placeholder='price' name='price{{i}}'/></td>
-                                    <td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>
+                                    {% comment %}<td><input type='number' class='form-control discount{{i}}' value='' id='discount{{i}}' min='0' placeholder='% discount' name='discount{{i}}'/></td>{% endcomment %}
                                     <td><input type='number' id='lineTotal{{i}}' class='form-control  lineTotal{{i}}' value='' min='0' placeholder='total paid' name='totalAmountPaid{{i}}' /></td>    
                                 </tr>
                                  
@@ -259,19 +259,19 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        {% if request.session.currency == 'SSP' %}
-                        <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button>
+                         {% if request.session.currency == 'SSP' %}
+                        {% comment %} <button type="button" id="converttousd" name="no" class="converttousd btn btn-primary">Convert to USD</button> {% endcomment %}
 
                         {% else %}
-                        <input type="text" name="usdd" value="usd" style="border: none;
+                        {% comment %} <input type="text" name="usdd" value="usd" style="border: none;
                         background-color: transparent;
                         resize: none;
                         outline: none;"/>
-                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button>
+                        <button type="button" id="converttousd" name="yes" disabled class="converttousd btn btn-primary">Convert to USD</button> {% endcomment %}
 
                         {% endif %}
-                        <button onclick ="confirmPrint();" id="addrowp">Print Me</button>
-                        <button type="submit" id="sender" name="sender" class="btn btn-primary">Send Data</button></a>
+                        {% comment %} <button onclick ="confirmPrint();" id="addrowp">Print Me</button> {% endcomment %}
+                        <button type="submit" id="sender" name="sender" onclick="confirmPrint();" class="btn btn-primary">Print / Send </button></a>
 <!--                        <p>-->
 <!--                            <h3>Incase you wish to <button type="submit" name="" class="btn btn-primary">Buy</button></h3>-->
 <!--                        </p>-->
