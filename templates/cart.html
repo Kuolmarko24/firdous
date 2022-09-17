@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% load humanize %}
+{% block content %}
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="white-box">
+                    <h3 class="box-title"> Customer Receipt </h3>
+                    <form method="post" action="" role="form" id="qrscan">
+                        {% csrf_token %}
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <input type="search" name="search" list="items" id="product" class="form-control" value="" placeholder="Search by name" autofocus />
+                                <datalist id="items">
+                                    {% for item in stocks %}
+                                        <option value="{{ item.inventoryPart }}"> {% if currency == 'SSP' %} @SSP {{ item.sellingPrice }} {%  else %} @USD {{ item.usdPrice }} {% endif %} - Quantity [{{ item.piecesQuantity }}]</option>
+                                    {% endfor %}
+                                </datalist>
+                           </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>Search</button>
+                           </div>
+                        </div>
+                    </form>
+                   <br><br>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="white-box">
+                    {% if error %} <b> {{ error }} </b> {% endif %}
+                    {% if cart|length %}
+                    <table class="table order-list table-bordered table-striped" id="myTable">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity (Click to edit)</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x in cart %}
+                                <tr>
+                                    <td> {{ x.item_purchased }}</td>
+                                    <td class="qty" contenteditable data-id200="{{ x.cartNo }}"> {{ x.quantity }}</td>
+                                    <td> {{ x.price }}</td>
+                                    <td> {{ x.amount }}</td>
+                                    <td> <a href="{% url 'cart-delete' pk=x.cartNo %}" class="btn btn-danger btn-sm"> <i class="fa fa-remove"></i> Delete </a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                        <form action="{%  url 'cart-receipt' %}" method="post" role="form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label> Total Amount({{ currency|upper }}): </label> 
+                                    <input type="text" name="amt" id="gtotal" value="{{ amount }}" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Discount(%): </label> 
+                                    <input type="text" name="disc" id="discount" value="0" class="form-control" />
+                                    <input type="hidden" name="discount" id="discountValue" value="0" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Grand Total({{ currency|upper }}): </label> 
+                                    <input type="text" name="total" id="total" value="{{ amount }}"  class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Customer Name : </label> 
+                                    <input type="text" name="customerName" class="form-control" value="" required  />
+                                </div>
+                                <!-- <div class="col-md-3">
+                                    <label> Total Amount(USD) : </label> 
+                                    <input type="text" name="ustotal" id="ustotal"  value="{{ usd_total|floatformat:2 }}" class="form-control" class="form-control" readonly />
+                                </div> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label> Choose Receipt: </label> 
+                                    <br/>
+                                    <input type="radio" name="method" value="Cash" checked > Sales </input>
+                                    <input type="radio" name="method" value="Credit" > Credit </input>
+                                    <input type="radio" name="method" value="Quotation" > Quotation </input>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> PurchasedFrom: </label> 
+                                        <select class="form-control" name="purchasedFrom" id="purchasedFrom">
+                                            <option value="SJ">SJ</option>
+                                            <option value="Firdous">Firdous</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> Payment Mode: </label> 
+                                        <select class="form-control" name="payType" required >
+                                            <option value="Cash" selected>Cash</option>
+                                            <option value="Bank">Bank</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                <label>  </label> 
+                                <br/>
+                                    <button type="submit" name="sender" class="btn btn-primary" role="button" ><i class="fa fa-print"> </i> Continue & Print </button>
+                                </div>
+                            </div>
+                            </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
