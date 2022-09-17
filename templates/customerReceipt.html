@@ -113,16 +113,30 @@
                                 </tr>
                                  
                                 <script>
-
-                                    $( document ).ready(function() {
+                                    var  usdValue = {{ curr }};
+                                    $(document ).ready(function() {
                                        //var inputfieldVal = $('#chequeNo').val();
                                        var  randoncheqno  =  Math.floor(1000 + Math.random() * 9000);
                                        $('#chequeNo').val(randoncheqno);
                                        //document.getElementById("chequeNo").value = randoncheqno;
                                        $('#chequeNo').val() = cheqno;
-                                        
-                                       });
 
+                                    });
+
+                                        $('#amountDue').change(function(){
+                                            
+                                            
+                                            var getgrandTotal = $("#amountDue").val();
+
+                                            var finTotal  = parseFloat(getgrandTotal * usdValue).toFixed(2);
+                                            alert(usdValue);
+                                            Number($("#dollar").val(finTotal.toFixed(2)));
+
+                                            $(this).addClass("disabled");
+
+                                            });
+                                        
+                                    
                                     $(function(){
 
                                         $(".quantity{{i}},.price{{i}}, .lineTotal{{i}} ").bind('click keyup',function(){
@@ -203,8 +217,10 @@
                                         $(this).addClass("disabled");
 
                                         });
-                            
+                                        
 
+                                        
+                                       
                                 //Function that fills Price when Item is chosen FROM DATALIST
 
                                        $(".ice-cream-choice{{i}}").on('change', function () { 
@@ -252,6 +268,10 @@
                                         <input class="amountDue" name="GTT" value=''></input>
                                         <span id="currencyy" value="">:-{{request.session.currency }}</span>
                                         {% comment %} <input type="text" name="grandtotal" id="amountDue" disabled class="form-control"> {% endcomment %}
+
+                                        <input class="amountDue" name="GTT" id="dollar" value="" ></input>
+                                        <span id="currencyy" value="">:-USD</span>
+                                        {% comment %} <input type="text" name="grandtotal" disabled class="form-control"> {% endcomment %}
                                         &nbsp;
                                     </td>
                                     

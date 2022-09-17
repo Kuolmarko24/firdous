@@ -48,10 +48,8 @@
         $('#example').DataTable();
         
     } );
-    </script>
+    </script>    
 
-    
-    
 
 </head>
 
@@ -154,15 +152,21 @@
                     </li>
                     
                     <li>
-                        <a href="{% url 'customers' %}" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i>Customers</a>
+                        <a href="{% url 'cart' %}" class="waves-effect"><i class="fa fa-shopping-cart fa-fw" aria-hidden="true"></i>Point of Sale </a>
                     </li>
-                     <li>
-                        <a href="{% url 'quotationReceipt' %}" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i>Proforma</a>
+                    <li>
+                        <a href="{% url 'cash-sales' %}" class="waves-effect"><i class="fa fa-database fa-fw" aria-hidden="true"></i>Cash Sales </a>
+                    </li>
+                    
+                    <li>
+                        <a href="{% url 'credit' %}" class="waves-effect"><i class="fa fa-list fa-fw" aria-hidden="true"></i>Credit Receipts </a>
                      </li>
                     <li>
-                        <a href="{% url 'creditReceipt' %}" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i>Customer Credit</a>
+                        <a href="{% url 'quotations' %}" class="waves-effect"><i class="fa fa-dollar fa-fw" aria-hidden="true"></i>Quotations</a>
                      </li>
-
+                     <li>
+                        <a href="{% url 'customers' %}" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i>Customers</a>
+                    </li>
                     {% comment %} <li>
                         <a href="{% url 'createcustomer' %}"class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Add Customer</a>
                     </li> {% endcomment %}
@@ -249,6 +253,7 @@
     <script src="{% static 'js/waves.js' %}"></script>
  <!-- Custom Theme JavaScript -->
     <script src="{% static 'js/custom.min.js' %}"></script>
+    <!-- <script src="{% static 'js/ajaxjquery.min.js' %}"></script> -->
 
     {% comment %} <script src="https://code.jquery.com/jquery-1.12.4.js"></script> {% endcomment %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -258,8 +263,71 @@
             $("#datetimepicker1").datetimepicker();
         });
     </script>
-
-
+ <script>
+    $("#product" ).change(function() {
+      $("#qrscan" ).submit();
+    });
+</script>  
+<script>
+// do live table update here 
+$(document).ready(function(){
+    function edit_cart(id,text){
+        $.ajax({
+            url:"../edited",
+            method:"GET",
+            data:{pid:id,text:text},
+            dataType:"text",
+            success:function(data){
+                if(data == 'failed'){
+                    alert('Quantity not available');
+                    window.location = '/cart';
+                }else{
+                    window.location = '/cart';
+                } 
+            }
+        });
+   }
+   // use on blur to change the quantity 
+   $(document).on('blur','.qty',function(){
+	 var id  = $(this).data("id200");
+	 var column = $(this).text();
+	 edit_cart(id,column);
+	});
+});
+</script>
+<script type="text/javascript">
+    // JavaScript function for printing using div element
+     function PrintContent(el){
+         var restorepage = document.body.innerHTML;
+         var printcontent = document.getElementById(el).innerHTML;
+         document.body.innerHTML = printcontent;
+         window.print();
+         document.body.innerHTML = restorepage;
+     }
+</script> 
+<script>
+    let cur = "{{ curr }}";
+    const currency = parseFloat(cur).toFixed(2);
+    myFunction();
+    document.getElementById("discount").onkeyup = function() {
+        myFunction()
+    };
+    function myFunction() {
+        v = document.getElementById("total");
+        d = document.getElementById("discountValue");
+        us = document.getElementById("ustotal");
+        total = document.getElementById("gtotal").value;
+        discount = document.getElementById("discount").value;
+        amount = (discount*0.01) * total;
+        if(discount == 0){
+            ftotal = total;
+        }else{
+            ftotal = (total - amount);
+        }
+        v.value = parseFloat(ftotal).toFixed(2);
+        // us.value = parseFloat(ftotal/currency).toFixed(2);
+        d.value = parseFloat(amount).toFixed(2);
+    }
+    </script>
 </body>
-
 </html>

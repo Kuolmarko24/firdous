@@ -17,6 +17,14 @@ urlpatterns = [
 
      path('stocks/', views.inventory, name='stocks'),
      path('cash/', views.cash, name='cash'),
+     
+     path('cart/', views.cart, name='cart'),
+     path('sales/', views.cashSales, name='cash-sales'),
+     path('credit/', views.viewCredit, name='credit'),
+     path('quoations/', views.viewQuotation, name='quotations'),
+     path('cart/Receipt', views.cartReceipt, name='cart-receipt'),
+     path('Receipt/<int:receipt>', views.previewReceipt, name='preview-receipt'),
+     path('edited', views.editCart, name='edit'),
      path('payable/', views.payable, name='payable'),
      path('transfer/', views.transfer, name='transfer'),
      path('writecheque/<int:pk>', views.Writecheques_detail, name='writecheque'),
@@ -24,6 +32,7 @@ urlpatterns = [
 
      path('payabledetail/<int:pk>', views.Payabledetail, name='payabledetail'),
      # path('receipts/', views.Receipts, name='receipts'),
+     path('cart/<int:pk>', views.deleteCart, name='cart-delete'),
 
      path('customerdetail/<int:pk>', views.Customerdetailfunc, name='customerdetail'),
      #path('invoicepaymentdetail/<int:pk>',views.Receivepayment_detail, name='invoicepaymentdetail'),

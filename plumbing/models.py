@@ -1,5 +1,6 @@
 # from asyncio.windows_events import NULL
 from email.policy import default
+from locale import currency
 from pyexpat import model
 from django.db import models
 from django.utils import timezone
@@ -53,6 +54,7 @@ class Stock(models.Model):
     piecesQuantity = models.IntegerField(default=1, blank=True)
     costPrice = models.FloatField()
     sellingPrice = models.FloatField()
+    usdPrice = models.FloatField(default=0.00)
     # currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True, blank=True)
     percentageProfit = models.CharField(max_length=150, blank=True)
     # quantity = models.IntegerField()
@@ -173,7 +175,7 @@ class CashInvoice(models.Model):
     modeOfPayment = models.CharField(max_length=100, choices=paymentMode, default='Cash')
     item_purchased = models.ForeignKey(Stock, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1,null=False)
-    totalAmountPaid = models.FloatField()
+    totalAmountPaid = models.FloatField(default=0)
     # currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True, blank=True)
     balance = models.FloatField()
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
@@ -322,8 +324,25 @@ class CustomerReceipt(models.Model):
     totalAmountPaid =  models.CharField(max_length=150, blank=True,default=0)
     # AmountAfterDiscount = models.FloatField()
     discount = models.CharField(max_length=150, blank=True,default=0)
-
+    currency = models.CharField(max_length=250, default='SSP')
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
+    payType = models.CharField(max_length=100,default='Cash')
+
+
+# Cart model
+class Cart(models.Model):
+    cartNo = models.IntegerField(blank=True, primary_key=True)
+    receiptNumber = models.CharField(max_length=150)
+    item_purchased = models.CharField(max_length=250)
+    quantity =  models.CharField(max_length=150, blank=True,default=0)
+    price = models.CharField(max_length=150, blank=True,default=0)
+    amount =  models.CharField(max_length=150, blank=True,default=0)
+    status = models.CharField(max_length=150, blank=True,default=0)
+    type = models.CharField(max_length=100, default='Cash')
+    
+    def __str__(self):
+        return str(self.cartNo)
+
 
 # Quotation Receipt
 class QuotationReceipt(models.Model):
@@ -338,8 +357,9 @@ class QuotationReceipt(models.Model):
     totalAmountPaid = models.CharField(max_length=150, blank=True, default=0)
     # AmountAfterDiscount = models.FloatField()
     balance = models.CharField(max_length=150, blank=True, default=0)
-
+    currency = models.CharField(max_length=250, default='SSP')
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
+    payType = models.CharField(max_length=100,default='Cash')
 
 # Credit Receipt
 class CreditReceipt(models.Model):
@@ -354,8 +374,9 @@ class CreditReceipt(models.Model):
     totalAmountPaid = models.CharField(max_length=150, blank=True, default=0)
     # AmountAfterDiscount = models.FloatField()
     # balance = models.CharField(max_length=150, blank=True, default=0)
-
+    currency = models.CharField(max_length=250, default='SSP')
     date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
+    payType = models.CharField(max_length=100,default='Cash')
     # # Calcuting discount
     # def calculate_discount(self):
     #     mydiscount = ((self.discount/100)*(self.item_purchased.sellingPrice*float(self.quantity)))

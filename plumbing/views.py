@@ -1,5 +1,8 @@
 # from asyncio.windows_events import None
+from email import message
+import json
 from locale import currency
+import re
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -9,7 +12,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from reportlab.pdfgen import canvas
 # from reportlab.lib.units import inch
 # from reportlab.lib.pagesizes import letter
-from .models import CustomerReceipt, CreditReceipt, QuotationReceipt, Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder
+from .models import Cart, CustomerReceipt, CreditReceipt, QuotationReceipt, Account, Customer, Payable,Stock, Transfer,Vendor,Cheques, CashInvoice,PurchaseOrder
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -17,6 +20,25 @@ from django.db.models import Sum
 from currencies.models import Currency
 from django.db.models import Count, F
 from datetime import datetime
+import random
+def get_code():
+    code = random.randint(1000000, 9999999)
+    return code
+
+def get_time():
+    now = datetime.now().strftime("%Y-%m-%d")
+    return now
+
+def get_cookie(request):
+    # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    # ip = request.META.get('REMOTE_ADDR')
+    x_forwarded_for = request.META.get('HTTP_COOKIE') if 'HTTP_COOKIE' in request.META else ''
+    if x_forwarded_for != '':
+        stip = x_forwarded_for.split(';')[0]
+        ip = stip.split('=')[1]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 # Create your views here.
 def profitReport(request):
@@ -48,6 +70,82 @@ def profitReport(request):
     }
     return render(request,'profitReport.html',context)
 
+@login_required
+def cartReceipt(request):
+    curry = Currency.objects.filter(code='USD')
+    currency = request.session['currency']
+    for currr in curry:
+        curr = currr.factor
+    ct_array =  Cart.objects.filter(status=0, receiptNumber=get_cookie(request))
+    if request.method == 'POST':
+        try:
+            amount = request.POST.get('total')
+            discount = request.POST.get('discount')
+            receiptNumber = get_code()
+            customerName = request.POST.get('customerName')
+            modeOfPayment= request.POST.get('method')
+            pay_type = request.POST.get('payType')
+            for t in ct_array:
+                if modeOfPayment != "Quotation":
+                    Stock.objects.filter(inventoryPart=str(t.item_purchased)).update(piecesQuantity=F('piecesQuantity')-t.quantity)
+                Cart.objects.filter(item_purchased=t.item_purchased,status=0).update(status=1, receiptNumber=receiptNumber, type=modeOfPayment)
+            item_purchased =''
+            quantity = 1
+            price = 1
+            purchasedFrom= request.POST.get('purchasedFrom')
+            date= get_time()
+            if modeOfPayment == 'Cash':
+                CustomerReceipt.objects.create(
+                receiptNumber=receiptNumber,
+                customerName=customerName,
+                modeOfPayment=modeOfPayment,
+                item_purchased=item_purchased,
+                purchasedFrom=purchasedFrom,
+                quantity=quantity,
+                price=price,
+                discount=discount,
+                totalAmountPaid=amount,
+                currency=currency,
+                date=date,
+                payType=pay_type
+                )
+                Account.objects.filter(name='SJ & Firdous').update(cashFromReceipts=F('cashFromReceipts') + float(amount))
+            elif modeOfPayment == 'Credit':
+                CreditReceipt.objects.create(
+                    creditNumber=receiptNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    discount=discount,
+                    totalAmountPaid=amount,
+                    currency=currency,
+                    date=date,
+                    payType=pay_type
+                    )
+                Account.objects.filter(name='SJ & Firdous').update(debtorBalance=F('debtorBalance') + float(amount))
+            elif modeOfPayment == 'Quotation':
+                QuotationReceipt.objects.create(
+                    quotationNumber=receiptNumber,
+                    customerName=customerName,
+                    modeOfPayment=modeOfPayment,
+                    item_purchased=item_purchased,
+                    purchasedFrom=purchasedFrom,
+                    quantity=quantity,
+                    price=price,
+                    discount=discount,
+                    totalAmountPaid=amount,
+                    currency=currency,
+                    date=date,
+                    payType=pay_type
+                )
+            return redirect("preview-receipt", receipt=receiptNumber)
+        except CustomerReceipt.DoesNotExist:
+            return HttpResponse('Fail') 
+
+@login_required
 def dashboard(request):
 
     myDate = datetime.now()
@@ -86,9 +184,10 @@ def dashboard(request):
 def index(request):
 
     defaultcurr = settings.DEFAULT_CURRENCY
+    request.session['cookie'] = ''
     if not request.session.has_key('currency'):
         request.session['currency'] = settings.DEFAULT_CURRENCY
-
+    
     labels = []
     data = []
 
@@ -283,6 +382,7 @@ def customerReceipt(request):
                 date= request.POST.get('date')
                 
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice1'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity1'))
+                
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice2'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity2'))
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice3'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity3'))
                 Stock.objects.filter(inventoryPart=str(request.POST.get('ice-cream-choice4'))).update(piecesQuantity=F('piecesQuantity')-request.POST.get('quantity4'))
@@ -490,8 +590,12 @@ def creditReceipt(request):
     return render(request, 'creditReceipt.html', context)
 
 
+
 def customers(request):
     curry = Currency.objects.filter(code='SSP')
+    cart = Cart.objects.filter(status='1', receiptNumber=get_cookie(request))
+    # cookie = get_cookie(request)
+    cookie = get_code()
     for currr in curry:
         curr = currr.factor
     if request.method == 'POST':
@@ -551,11 +655,13 @@ def customers(request):
         stockscount = Stock.objects.all().count()
         vendorcount = Vendor.objects.all().count()
         context = {'customers':customers,
-              'customercount':customercount,
-              'stockscount':stockscount,
-              'vendorcount':vendorcount,
-              'cash':cash,
-              'curr':curr,
+                    'customercount':customercount,
+                    'stockscount':stockscount,
+                    'vendorcount':vendorcount,
+                    'cash':cash,
+                    'curr':curr,
+                    'cart':cart,
+                    'cookie': cookie
               }
     # customers = Customer.objects.filter(addedby=request.user)
     customers = Customer.objects.all()
@@ -567,6 +673,8 @@ def customers(request):
                 'stocks':stocks,
                 'customercount':customercount,
                 'curr':curr,
+                'cart':cart,
+                'cookie': cookie
               }
     
     for stock in stocks:
@@ -594,12 +702,106 @@ def inventory(request):
             messages.warning(request, stockProfit.inventoryPart+' are RUNNING LOW, please Restock')
                 
 
-
     context ={'stocks':stocks,
               'percstockProfit':percstockProfit
               }
     return render(request, 'inventory.html', context)
 
+@login_required
+def cart(request):
+    curry = Currency.objects.filter(code='USD')
+    currency = request.session['currency']
+    for currr in curry:
+        curr = currr.factor
+    cst = Cart.objects.filter(status=0, receiptNumber=get_cookie(request)).annotate(totals=Sum('amount'))
+    tot = 0
+    for k in cst:
+        tot += float(k.amount)
+    total = tot
+    ct_array =  Cart.objects.filter(status=0, receiptNumber=get_cookie(request))
+    if request.method == 'POST':
+        search = request.POST['search']
+        stocks = Stock.objects.all()
+        qty_msg = ''
+        try:
+            stk = Stock.objects.filter(inventoryPart=search)
+            if stk:
+                for x in stk:
+                    check = Cart.objects.filter(item_purchased=search, status=0, receiptNumber=get_cookie(request))
+                    if check:
+                       for a in check:
+                            qty = int(a.quantity)+1 
+                            amount = float(a.price) * qty
+                            if qty <= int(x.piecesQuantity):
+                                Cart.objects.filter(item_purchased=search, status=0, receiptNumber=get_cookie(request)).update(quantity=qty, amount=amount)
+                            else:
+                                qty_msg = 'Quantity not available'
+                    else:
+                        if currency == 'SSP':
+                            amt = x.sellingPrice
+                        else:
+                            amt = x.usdPrice
+                        Cart.objects.create(cartNo=get_code(), receiptNumber=get_cookie(request), item_purchased=x.inventoryPart, quantity=1, 
+                    price=amt, amount=amt, status=0)
+                
+                cty = Cart.objects.filter(status=0, receiptNumber=get_cookie(request)).annotate(totals=Sum('amount'))
+                tt = 0
+                for m in cty:
+                    tt += float(m.amount)
+                ctotal = tt
+                cx_array =  Cart.objects.filter(status=0, receiptNumber=get_cookie(request))
+                ctx = {'error': 'Item found','cart': cx_array, 'qty_msg': qty_msg, 'amount': ctotal, 
+                'usd_total': float(int(ctotal) / curr), 'stocks':stocks, 'currency': currency}
+            else:
+                ctx = {'error': 'Item not found','qty_msg': '', 'cart': ct_array, 'amount': total, 'usd_total': float(int(total) / curr),
+                'stocks':stocks, 'currency': currency}
+            return render(request, 'cart.html', ctx)
+        except Account.DoesNotExist:
+            return HttpResponse('Fail')
+    else:
+        if request.user.is_staff:
+            cash = CashInvoice.objects.all()
+            stocks = Stock.objects.all()
+            customercount = CashInvoice.objects.all().count()
+            stockscount = Stock.objects.all().count()
+            vendorcount = Vendor.objects.all().count()
+            context = {'cash': cash,
+                    'customercount': customercount,
+                    'stockscount': stockscount,
+                    'vendorcount': vendorcount,
+                    'cash': cash,
+                    'curr':curr,
+                    }
+        cash = CashInvoice.objects.all()
+        customercount = CashInvoice.objects.all().count()
+        context = { 'cash': cash, 'stocks': stocks, 'customercount': customercount, 'curr':curr, 
+        'amount': total, 'cart': ct_array, 'usd_total': float(int(total) / curr), 'currency': currency}
+    return render(request, 'cart.html',context)
+
+
+def editCart(request):
+    cart_id = int(request.GET.get('pid', ''))
+    quantity = int(request.GET.get('text', ''))
+    chk = Cart.objects.filter(cartNo=cart_id)
+    for a in chk:
+        search = a.item_purchased
+    try:
+        stk = Stock.objects.filter(inventoryPart=search)
+        if stk:
+            for x in stk:
+                check = Cart.objects.filter(cartNo=cart_id)
+                if check:
+                    for a in check:
+                        price = float(a.price)
+            amount = float(price) * quantity
+            if quantity <= int(x.piecesQuantity):
+                Cart.objects.filter(cartNo=cart_id).update(quantity=quantity, amount=amount)
+            else:
+                return HttpResponse('failed')
+            return redirect("cart")
+    except Account.DoesNotExist:
+        return HttpResponse('Fail')
+    
 @login_required
 def cash(request):
     curry = Currency.objects.filter(code='SSP')
@@ -928,8 +1130,96 @@ def Createcustomer(request):
     #
     # context = {'inventorys': inventorys
     #            }
-    return render(request, 'customer_create.html', )
+    return render(request, 'customer_create.html')
 
+@login_required
+def cashSales(request):
+    curry = Currency.objects.filter(code='USD')
+    for currr in curry:
+        curr = currr.factor
+    stocks = Stock.objects.all()
+    receipts = CustomerReceipt.objects.all()
+    context = {'stocks':stocks, 'curr': curr, "receipts": receipts}
+    return render(request,'sales.html', context)
+
+
+@login_required
+def viewCredit(request):
+    curry = Currency.objects.filter(code='USD')
+    for currr in curry:
+        curr = currr.factor
+    stocks = Stock.objects.all()
+    receipts = CreditReceipt.objects.all()
+    context = {'stocks':stocks, 'curr': curr, "receipts": receipts}
+    return render(request,'credit.html', context)
+
+@login_required
+def viewQuotation(request):
+    curry = Currency.objects.filter(code='USD')
+    for currr in curry:
+        curr = currr.factor
+    stocks = Stock.objects.all()
+    receipts = QuotationReceipt.objects.all()
+    context = {'stocks':stocks, 'curr': curr, "receipts": receipts}
+    return render(request,'quotation.html', context)
+
+@login_required
+def previewReceipt(request, receipt):
+    curry = Currency.objects.filter(code='USD')
+    for currr in curry:
+        curr = currr.factor
+    cst = Cart.objects.filter(status=1, receiptNumber=receipt).annotate(totals=Sum('amount'))
+    tot = 0
+    method = []
+    for k in cst:
+        tot += float(k.amount)
+        method.append(str(k.type))
+    if method[0] == 'Cash':
+        t = CustomerReceipt.objects.filter(receiptNumber=receipt)
+        for m in t:
+            total = float(m.totalAmountPaid)
+            discount = float(m.discount)
+            currency = str(m.currency)
+            mode = str(m.modeOfPayment)
+            cname = str(m.customerName)
+            purchased = str(m.purchasedFrom)
+            ptype = str(m.payType)
+    elif method[0] == 'Credit':
+        t = CreditReceipt.objects.filter(creditNumber=receipt)
+        for m in t:
+            total = float(m.totalAmountPaid)
+            discount = float(m.discount)
+            currency = str(m.currency)
+            mode = str(m.modeOfPayment)
+            cname = str(m.customerName)
+            purchased = str(m.purchasedFrom)
+            ptype = str(m.payType)
+    else:
+        t = QuotationReceipt.objects.filter(quotationNumber=receipt)
+        for m in t:
+            total = float(m.totalAmountPaid)
+            discount = float(m.discount)
+            currency = str(m.currency)
+            mode = str(m.modeOfPayment)
+            cname = str(m.customerName)
+            purchased = str(m.purchasedFrom)
+            ptype = str(m.payType)
+    usd_total = float(int(total) / curr)
+    usd_disc = float(int(discount) / curr)
+    stocks = Stock.objects.all()
+    receipts = Cart.objects.filter(receiptNumber=receipt, status=1)
+    context = {'stocks': stocks, 'curr': curr, "receipts": receipts, "total": total, 
+    "usd_total": usd_total, "method": method[0], "usd_disc": usd_disc,"discount": discount, 
+    "currency": currency, "receipt": receipt, "customer": cname, "mode": mode, 'purchased': purchased, 'payMethod':ptype}
+    return render(request,'cashReceipt.html', context)
+
+def deleteCart(request, pk):
+    cart = get_object_or_404(Cart, pk=pk)
+    if cart:
+        Cart.objects.filter(cartNo=pk).delete()
+    else:
+        return HttpResponse('Failed to delete')
+    return redirect("cart")
 
 def Customerdetailfunc(request, pk):
     # inventorys = Stock.objects.all()

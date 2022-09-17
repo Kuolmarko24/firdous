@@ -49,6 +49,7 @@ admin.site.register(CashInvoice, CashInvoiceAdmin),
 admin.site.register(PurchaseOrder, PurchaseOrderAdmin),
 admin.site.register(Cheques,ChequesAdmin),
 admin.site.register(Payable),
+admin.site.register(Cart),
 admin.site.register(CustomerReceipt,CustomerReceiptAdmin),
 admin.site.register(QuotationReceipt,QuotationReceiptAdmin),
 admin.site.register(CreditReceipt,CreditReceiptAdmin)
