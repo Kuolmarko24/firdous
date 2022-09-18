@@ -28,7 +28,51 @@
             <div class="white-box">
                 <div id="printCustomerReceipt">
                         <div id="printed">
-                            <div style="text-align:right;padding: 3px;">
+                            <div class="payment-info">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span>Receipt No:</span>
+                                        <strong>{{ receipt }}</strong><br>
+                                        <span>Client's Name</span>
+                                        <strong>
+                                            {{ customer }}
+                                        </strong><br>
+                                        <span>Purchased From</span>
+                                        <strong>
+                                            {{ purchased }}
+                                        </strong><br>
+                                        <span>Mode of Payment</span>
+                                        <strong>
+                                            {{ payMethod }}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <p>
+                                            <span></span>
+                                            <strong>
+                                                {{ method }} Receipt
+                                            </strong><br>
+                                            P.O.BOX Malikia South Sudan <br>
+                                            Behind Eden Commercial Bank <br>
+                                            +211(0)924248033/+211(0)919253500 <br>
+                                            <!-- USA <br>
+                                            <a href="#">
+                                                juanfer@gmail.com
+                                            </a> -->
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="payment-details">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                       
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        
+                                    </div>
+                            <!-- <div style="text-align:right;padding: 3px;">
                                 <h4 class="modal-title" style="line-height: 3.2rem"> {{ method }} Receipt</h4>
                                 <h5 class="modal-title" style="line-height: 3.2rem">P.O.BOX Malikia South Sudan</h5>
                                 <h5 class="modal-title" style="line-height: 3.2rem">Behind Eden Commercial Bank</h5>
@@ -41,7 +85,7 @@
                                 <h4 class="modal-title" style="line-height: 3.2rem">PurchasedFrom: <b> {{ purchased }}</b></h4>
                                 <h4 class="modal-title" style="line-height: 3.2rem">Mode of Payment: <b>{{ payMethod }} </b></h4>
                                 {% endif %}
-                            </div>
+                            </div> -->
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
